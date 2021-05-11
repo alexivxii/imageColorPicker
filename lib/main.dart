@@ -161,13 +161,23 @@ class TakePictureScreenState extends State<TakePictureScreen> {
      setImageBytes(data);
 
 //FractionalOffset(1.0, 0.0); //represents the top right of the [Size].
-      double px = 1.0;
-      double py = 0.0;
-
-      int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
+      double px = 240.0;
+      double py = 360.0;
+      print("asta e pixelu ${photo.getPixel(px.toInt(), py.toInt())}");
+      int pixel32 = photo.getPixel(px.toInt(), py.toInt());
       int hex = abgrToArgb(pixel32);
-      print("Value of int: $hex ");
-      print("value in hex: ${hex.toRadixString(16)}");
+      print("asta e pixelu hex");
+      print(hex.toRadixString(16));
+      // print("asta e pixelu hex ${photo.getPixel(px.toInt(), py.toInt()).toRadixString(16)}");
+      int a = photo.height;
+      int b = photo.width;
+      print("Height is: $a and width is $b");
+
+      // int pixel32 = photo.getPixelSafe(1,0 );
+      // // int pixel32 = photo.getPixelSafe(b/2,a/2);
+      // int hex = abgrToArgb(pixel32);
+      // print("Value of int: $hex ");
+      // print("value in hex: ${hex.toRadixString(16)}");
 
       return Color(hex);
 
@@ -229,7 +239,30 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+              Positioned.fill(
+              child: new AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: new CameraPreview(_controller)),
+            ),
+            Center(
+              child: new GestureDetector(
+                onTap: () {
+                  print("aaaa");
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.grey,
+                  size: 30.0,
+                ),
+              ),
+              // top: MediaQuery.of(context).size.height/2.5,
+              // right: MediaQuery.of(context).size.width/2.2,
+            ),
+              ],
+            );
           } else {
             // Otherwise, display a loading indicator.
             return Center(child: CircularProgressIndicator());

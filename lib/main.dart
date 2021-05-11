@@ -79,6 +79,8 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +123,76 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
+
+
+  img.Image photo;
+
+  void setImageBytes(imageBytes) {
+    print("setImageBytes");
+    List<int> values = imageBytes.buffer.asUint8List();
+    photo = null;
+    photo = img.decodeImage(values);
+  }
+
+  // image lib uses uses KML color format, convert #AABBGGRR to regular #AARRGGBB
+  int abgrToArgb(int argbColor) {
+    print("abgrToArgb");
+    int r = (argbColor >> 16) & 0xFF;
+    int b = argbColor & 0xFF;
+    return (argbColor & 0xFF00FF00) | (b << 16) | r;
+  }
+
+  // FUNCTION
+
+  Future<Color> _getColor(String path) async {
+    print("_getColor");
+
+    // data =
+    //       (await NetworkAssetBundle(
+    //           Uri.parse(coverData)).load(coverData))
+    //           .buffer
+    //           .asUint8List();
+
+    File image = File(path);
+    await image.readAsBytes().then((value){
+     final Uint8List data = Uint8List.fromList(value);
+
+     print("setImageBytes....");
+     setImageBytes(data);
+
+//FractionalOffset(1.0, 0.0); //represents the top right of the [Size].
+      double px = 1.0;
+      double py = 0.0;
+
+      int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
+      int hex = abgrToArgb(pixel32);
+      print("Value of int: $hex ");
+      print("value in hex: ${hex.toRadixString(16)}");
+
+      return Color(hex);
+
+    });
+    // final ByteData bytes = image.toByteData();
+    // final Uint8List data = bytes.buffer.asUint8List();
+
+//     print("setImageBytes....");
+//     setImageBytes(data);
+//
+// //FractionalOffset(1.0, 0.0); //represents the top right of the [Size].
+//     double px = 1.0;
+//     double py = 0.0;
+//
+//     int pixel32 = photo.getPixelSafe(px.toInt(), py.toInt());
+//     int hex = abgrToArgb(pixel32);
+//     print("Value of int: $hex ");
+//
+//     return Color(hex);
+  }
+
+
+
+
+
 
   @override
   void initState() {
@@ -179,16 +251,19 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             final image = await _controller.takePicture();
 
             // If the picture was taken, display it on a new screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  imagePath: image?.path,
-                ),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => DisplayPictureScreen(
+            //       // Pass the automatically generated path to
+            //       // the DisplayPictureScreen widget.
+            //       imagePath: image?.path,
+            //     ),
+            //   ),
+            // );
+
+            _getColor(image?.path);
+
           } catch (e) {
             // If an error occurs, log the error to the console.
             print(e);

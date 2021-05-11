@@ -124,6 +124,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
 
+  String displayHex = "aaa";
+  String displayColor = "0xffffffff";
 
   img.Image photo;
 
@@ -178,6 +180,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       // int hex = abgrToArgb(pixel32);
       // print("Value of int: $hex ");
       // print("value in hex: ${hex.toRadixString(16)}");
+
+      setState(() {
+        displayHex = hex.toRadixString(16);
+        displayColor = displayHex.replaceAll('ff', '0xff');
+      });
 
       return Color(hex);
 
@@ -247,7 +254,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   aspectRatio: _controller.value.aspectRatio,
                   child: new CameraPreview(_controller)),
             ),
-            Center(
+            Positioned(
+              top:30,
+              left: 20,
+                child: Text(displayHex, style: TextStyle(color: Color(int.parse(displayColor))),),
+            ),
+            Positioned(
               child: new GestureDetector(
                 onTap: () {
                   print("aaaa");
@@ -258,8 +270,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   size: 30.0,
                 ),
               ),
-              // top: MediaQuery.of(context).size.height/2.5,
-              // right: MediaQuery.of(context).size.width/2.2,
+              top: MediaQuery.of(context).size.height/3.1,
+              right: MediaQuery.of(context).size.width/2,
             ),
               ],
             );

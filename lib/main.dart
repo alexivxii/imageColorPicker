@@ -124,8 +124,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
 
-  String displayHex = "aaa";
+  String displayHex = "Color Picked";
   String displayColor = "0xffffffff";
+  String displayHeight = "hhh";
+  String displayWidth = "www";
+
 
   img.Image photo;
 
@@ -165,8 +168,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 //FractionalOffset(1.0, 0.0); //represents the top right of the [Size].
       double px = 240.0;
       double py = 360.0;
-      print("asta e pixelu ${photo.getPixel(px.toInt(), py.toInt())}");
-      int pixel32 = photo.getPixel(px.toInt(), py.toInt());
+      print("asta e pixelu ${photo.getPixel(py.toInt(), px.toInt())}");
+      int pixel32 = photo.getPixel(py.toInt(), px.toInt());
       int hex = abgrToArgb(pixel32);
       print("asta e pixelu hex");
       print(hex.toRadixString(16));
@@ -181,9 +184,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       // print("Value of int: $hex ");
       // print("value in hex: ${hex.toRadixString(16)}");
 
+
       setState(() {
         displayHex = hex.toRadixString(16);
         displayColor = displayHex.replaceAll('ff', '0xff');
+        displayHeight = photo.height.toString();
+        displayWidth = photo.width.toString();
       });
 
       return Color(hex);
@@ -257,9 +263,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             Positioned(
               top:30,
               left: 20,
-                child: Text(displayHex, style: TextStyle(color: Color(int.parse(displayColor))),),
+                child: Column(
+                  children: [
+                    Text(displayHex, style: TextStyle(color: Color(int.parse(displayColor))),),
+                    Text(displayHeight, style: TextStyle(color: Color(int.parse(displayColor))),),
+                    Text(displayWidth, style: TextStyle(color: Color(int.parse(displayColor))),),
+                  ],
+                ),
             ),
-            Positioned(
+            Center(
               child: new GestureDetector(
                 onTap: () {
                   print("aaaa");
@@ -270,8 +282,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   size: 30.0,
                 ),
               ),
-              top: MediaQuery.of(context).size.height/3.1,
-              right: MediaQuery.of(context).size.width/2,
+              // top: MediaQuery.of(context).size.height/3.1,
+              // right: MediaQuery.of(context).size.width/2,
             ),
               ],
             );

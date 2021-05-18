@@ -260,17 +260,51 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   aspectRatio: _controller.value.aspectRatio,
                   child: new CameraPreview(_controller)),
             ),
-            Positioned(
-              top:30,
-              left: 20,
-                child: Column(
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 100,
+                color: Colors.black.withOpacity(0.5),
+                child: Row(
                   children: [
-                    Text(displayHex, style: TextStyle(color: Color(int.parse(displayColor))),),
-                    Text(displayHeight, style: TextStyle(color: Color(int.parse(displayColor))),),
-                    Text(displayWidth, style: TextStyle(color: Color(int.parse(displayColor))),),
+                    Container(
+                      child: Icon(Icons.copy),
+                      height: 55,
+                      width: 55,
+                      margin: EdgeInsets.only(left:20),
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle
+                      ),
+                    ),
+                    Container(
+                      height: 55,
+                      width: 55,
+                      margin: EdgeInsets.only(left:20),
+                      decoration: BoxDecoration(
+                          color: Color(int.parse(displayColor)),
+                          shape: BoxShape.circle
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left:10),
+                        child: Text(displayHex, style: TextStyle(fontSize: 18),)
+                    ),
                   ],
                 ),
+              )
             ),
+            // Positioned(
+            //   top:30,
+            //   left: 20,
+            //     child: Column(
+            //       children: [
+            //         Text(displayHex, style: TextStyle(color: Color(int.parse(displayColor))),),
+            //         Text(displayHeight, style: TextStyle(color: Color(int.parse(displayColor))),),
+            //         Text(displayWidth, style: TextStyle(color: Color(int.parse(displayColor))),),
+            //       ],
+            //     ),
+            // ),
             Center(
               child: new GestureDetector(
                 onTap: () {
@@ -295,8 +329,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera_alt),
+        backgroundColor: Colors.green,
         // Provide an onPressed callback.
         onPressed: () async {
+
           // Take the Picture in a try / catch block. If anything goes wrong,
           // catch the error.
           try {
@@ -325,6 +361,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // If an error occurs, log the error to the console.
             print(e);
           }
+          Clipboard.setData(ClipboardData(text: displayHex));
         },
       ),
     );

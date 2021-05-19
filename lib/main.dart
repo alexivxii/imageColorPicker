@@ -267,14 +267,19 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 color: Colors.black.withOpacity(0.5),
                 child: Row(
                   children: [
-                    Container(
-                      child: Icon(Icons.copy),
-                      height: 55,
-                      width: 55,
-                      margin: EdgeInsets.only(left:20),
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle
+                    GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: displayHex));
+                      },
+                      child: Container(
+                        child: Icon(Icons.copy),
+                        height: 55,
+                        width: 55,
+                        margin: EdgeInsets.only(left:20),
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle
+                        ),
                       ),
                     ),
                     Container(
@@ -357,11 +362,13 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             _getColor(image?.path);
 
+
+
           } catch (e) {
             // If an error occurs, log the error to the console.
             print(e);
           }
-          Clipboard.setData(ClipboardData(text: displayHex));
+
         },
       ),
     );
